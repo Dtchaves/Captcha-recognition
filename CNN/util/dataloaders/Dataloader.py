@@ -1,6 +1,7 @@
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
+from torchvision import transforms
 
 import numpy as np
 from skimage import io
@@ -33,12 +34,15 @@ class CaptchaDataloader(Dataset):
         with open(lbl_name,'r') as file:
             label_str = file.read()
                     
-        if self.transform:
-            image = self.transform(image)
-        
         image = torch.from_numpy(image)
         image = image.to(torch.float32)
+        print(image.shape)
         image = image[None,:,:]
+        print(image.shape)
+
+        #if self.transform:
+            #image = self.transform(image)
+
 
         label_str = str(label_str)
         label_str = label_str.replace('\n', '')
@@ -58,7 +62,10 @@ class CaptchaDataloader(Dataset):
 
 if __name__ == "__main__":
     batch_size = 64
-    teste = CaptchaDataloader(root_dir='/scratch/diogochaves/Projetos/ICV/Dataset/Cortado')
+    
+    resize_transform = transforms.Resize((50,32))
+
+    teste =  CaptchaDataloader(split='treinamento',transform= resize_transform,root_dir='/scratch/diogochaves/Projetos/ICV/Dataset/Cortado')
     teste = DataLoader(dataset=teste, batch_size=batch_size, shuffle=True)
     
     for batch in teste:

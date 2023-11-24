@@ -33,7 +33,7 @@ class Trainer:
         plt.savefig(save_path)
         
     def save_models(self,best_values):
-        name = f"Best_w" + self.model_name
+        name = f"Best_w_" + self.model_name
         save_path = os.path.join(self.path_par, name)
         torch.save(best_values, save_path)
         
@@ -43,14 +43,14 @@ class Trainer:
 
         conv_train_losses = []
         conv_val_losses = []
-        
+        actual_loss = 9e20
+        save_epo = 0.0
+
         print(f"\n{Fore.BLUE}----- STARTING TRAINING -----{Style.RESET_ALL}\n")
         for t in range(epochs):
             
             train_loss = 0.0
             val_loss = 0.0
-            actual_loss = 0.0
-            save_epo = 0.0
 
             for img, label in tqdm(self.train_loader, desc=f'TRAINING EPOCH {t}/{epochs-1}',dynamic_ncols=True,colour="BLUE",):
                 cnn_optimizer.zero_grad()
@@ -78,14 +78,17 @@ class Trainer:
                 
             val_loss = val_loss / len(self.val_loader)
             conv_val_losses.append(val_loss)
-            if actual_loss < val_loss:
+            
+            if actual_loss > val_loss:
                 actual_loss = val_loss
                 save_epo = t
-                best_values = self.model.state_dict()
+                self.save_models(self.model.state_dict())
             if t % 5 == 0:
-                print(f"Epoch: {t} \nTrain Loss: {train_loss}\Validation Loss: {val_loss}\n")
+                print(f"Epoch: {t} \nTrain Loss: {train_loss}\nValidation Loss: {val_loss}\n")
                 if t != 0:
                     self.plot_loss(conv_train_losses,conv_val_losses,t)         
-                    
-        self.save_models(best_values)
+        
+        with open(os.path.join(self.path_par, f"Best_w_description_" + self.model_name) + '.txt','w') as file:
+                file.write(f"Melhor época foi a {save_epo} com a loss de {actual_loss}")
+                
         print(f"{Fore.GREEN}TRAINING COMPLETED{Style.RESET_ALL}")
