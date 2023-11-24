@@ -61,9 +61,9 @@ class Test:
         print(type(y_pred))
         return y_true,y_pred
     
-    def fit(self):
+    def fit(self,device):
         self.model.eval()
-        y_true,y_pred = self.Get_Y()
+        y_true,y_pred = self.Get_Y(device)
         self.metric(y_true=y_true, y_pred=y_pred)
         classification_report = metrics.classification_report(y_true, y_pred,target_names=None)
         return classification_report

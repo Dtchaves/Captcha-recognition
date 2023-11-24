@@ -44,18 +44,21 @@ class CaptchaDataloader(Dataset):
         label_str = label_str.replace('\n', '')
         
         label = [ord(char) - 27 if ord(char) == 63 else ord(char) - 48 if 48 <= ord(char) <= 57 else ord(char) - 55 for char in label_str]
+        label = int(label[0])
+
+        #CrossEntropy nao usa hot
         label_hot = np.zeros(37)
         label_hot[label] = 1
         label_hot = torch.tensor(label_hot)
         
-        return image,label_hot
+        return image,label
     
     
     
 
 if __name__ == "__main__":
     batch_size = 64
-    teste = CaptchaDataloader(root_dir='/home/diogo/Documentos/final_icv/Dataset/Cortado')
+    teste = CaptchaDataloader(root_dir='/scratch/diogochaves/Projetos/ICV/Dataset/Cortado')
     teste = DataLoader(dataset=teste, batch_size=batch_size, shuffle=True)
     
     for batch in teste:

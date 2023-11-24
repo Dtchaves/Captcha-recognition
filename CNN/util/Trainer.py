@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import os
 import torch
 from torch import nn
+
+from colorama import Fore, Style
 from tqdm import tqdm
 
 
@@ -30,8 +32,8 @@ class Trainer:
         save_path = os.path.join(self.path_loss, name)
         plt.savefig(save_path)
         
-    def save_models(self, epoch,best_values):
-        name = f"epoch{epoch}_" + self.model_name
+    def save_models(self,best_values):
+        name = f"Best_w" + self.model_name
         save_path = os.path.join(self.path_par, name)
         torch.save(best_values, save_path)
         
@@ -42,7 +44,7 @@ class Trainer:
         conv_train_losses = []
         conv_val_losses = []
         
-        print("\n\n ----- STARTING TRAINING -----\n\n")
+        print(f"\n{Fore.BLUE}----- STARTING TRAINING -----{Style.RESET_ALL}\n")
         for t in range(epochs):
             
             train_loss = 0.0
@@ -52,7 +54,7 @@ class Trainer:
 
             for img, label in tqdm(self.train_loader, desc=f'TRAINING EPOCH {t}/{epochs-1}',dynamic_ncols=True,colour="BLUE",):
                 cnn_optimizer.zero_grad()
-                
+
                 img,label = img.to(device) ,label.to(device)
                 
                 pred = self.model(img)
@@ -80,9 +82,10 @@ class Trainer:
                 actual_loss = val_loss
                 save_epo = t
                 best_values = self.model.state_dict()
-            if t % 10 == 0:
-                print(f"Epoch: {t} \nTrain Loss: {train_loss}\nTest Loss: {val_loss}\n")
-            if t != 0:
-                self.plot_loss(conv_train_losses,conv_val_losses,t)         
+            if t % 5 == 0:
+                print(f"Epoch: {t} \nTrain Loss: {train_loss}\Validation Loss: {val_loss}\n")
+                if t != 0:
+                    self.plot_loss(conv_train_losses,conv_val_losses,t)         
                     
-        self.save_models(save_epo,best_values)
+        self.save_models(best_values)
+        print(f"{Fore.GREEN}TRAINING COMPLETED{Style.RESET_ALL}")

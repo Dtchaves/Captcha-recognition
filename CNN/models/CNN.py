@@ -30,7 +30,6 @@ class CNN_net(nn.Module):
       x = self.convlayers(x)
       x = torch.flatten(x, 1)
       x = self.linearlayers(x)
-      x = nn.functional.softmax(x, dim=-1)
       return x
     
 if __name__ == "__main__":

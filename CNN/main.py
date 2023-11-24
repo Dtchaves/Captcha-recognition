@@ -1,8 +1,13 @@
 import torch
-#teste
+
+from colorama import Fore, Style
+
 from models.CNN import *
+from models.Resnet import *
+from models.Vgg import *
 from util.Test import *
 from util.Trainer import *
+
 from util.dataloaders.Dataloader import CaptchaDataloader
 from torch.utils.data import DataLoader
 from torchvision import transforms
@@ -19,9 +24,9 @@ batch_size = 64
 #]) 
 
 
-train_data = CaptchaDataloader(split='treinamento',root_dir='/home/diogo/Documentos/final_icv/Dataset/Cortado')
-val_data = CaptchaDataloader(split='validacao',root_dir='/home/diogo/Documentos/final_icv/Dataset/Cortado')
-test_data = CaptchaDataloader(split='teste',root_dir='/home/diogo/Documentos/final_icv/Dataset/Cortado')
+train_data = CaptchaDataloader(split='treinamento',root_dir='/scratch/diogochaves/Projetos/ICV/Dataset/Cortado')
+val_data = CaptchaDataloader(split='validacao',root_dir='/scratch/diogochaves/Projetos/ICV/Dataset/Cortado')
+test_data = CaptchaDataloader(split='teste',root_dir='/scratch/diogochaves/Projetos/ICV/Dataset/Cortado')
 
 
 
@@ -34,14 +39,31 @@ test_loader = DataLoader(dataset=test_data, batch_size=6, shuffle=False)
 test_loader
 
 
-
 device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"Rodando na {device}")
+print(f"\nRodando modelo de CNN simples na {device}")
 
 cnn_model = CNN_net().to(device)
-trainer = Trainer(model=cnn_model,train_loader=train_loader,val_loader=val_loader,model_name="CNN",path_par='/home/diogo/Documentos/final_icv/CNN/results/best_model',path_loss='/home/diogo/Documentos/final_icv/CNN/results/loss')
-trainer.run(device=device,epochs=10)
+entrada = ''
+while entrada != "Load" and entrada != "Train":
+    entrada = input("\nLoad or Train?\n")
 
-test = Test(cnn_model,test_loader,"CNN",path='/home/diogo/Documentos/final_icv/CNN/results/metrics')
+    if entrada == "Load":
+        print(f"{Fore.BLUE}\n ----- STARTING LOADING -----\n{Style.RESET_ALL}")
+        
+        path_dic = '/scratch/diogochaves/Projetos/ICV/CNN/results/best_w/Best_w_CNN'
+        dic = torch.load(path_dic)
+        cnn_model.load_state_dict(dic)
+        
+        print(f"{Fore.GREEN}LOADING COMPLETED{Style.RESET_ALL}")
+        
+    elif entrada == "Train":
+        trainer = Trainer(model=cnn_model,train_loader=train_loader,val_loader=val_loader,model_name="CNN",path_par='/scratch/diogochaves/Projetos/ICV/CNN/results/best_w',path_loss='/scratch/diogochaves/Projetos/ICV/CNN/results/loss')
+        trainer.run(device=device,epochs=20)
+
+print(f"{Fore.BLUE}\n ----- STARTING TESTING -----\n{Style.RESET_ALL}")
+
+test = Test(cnn_model,test_loader,"CNN",path='/scratch/diogochaves/Projetos/ICV/CNN/results/metrics')
 classification_report = test.fit(device=device)
 print(classification_report)
+
+print(f"{Fore.GREEN}TESTING COMPLETED{Style.RESET_ALL}")
