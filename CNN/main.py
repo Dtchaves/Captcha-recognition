@@ -12,7 +12,7 @@ from util.dataloaders.Dataloader import CaptchaDataloader
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
-
+#TESSTEEE
 #Load data
 batch_size = 64
 
