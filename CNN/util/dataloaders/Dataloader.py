@@ -34,14 +34,15 @@ class CaptchaDataloader(Dataset):
         with open(lbl_name,'r') as file:
             label_str = file.read()
                     
+
         image = torch.from_numpy(image)
         image = image.to(torch.float32)
-        print(image.shape)
         image = image[None,:,:]
-        print(image.shape)
 
-        #if self.transform:
-            #image = self.transform(image)
+
+        if self.transform:
+            image = self.transform(image)
+
 
 
         label_str = str(label_str)
@@ -65,7 +66,7 @@ if __name__ == "__main__":
     
     resize_transform = transforms.Resize((50,32))
 
-    teste =  CaptchaDataloader(split='treinamento',transform= resize_transform,root_dir='/scratch/diogochaves/Projetos/ICV/Dataset/Cortado')
+    teste =  CaptchaDataloader(split='treinamento',transform= resize_transform,root_dir='/home/diogo/Documentos/final_icv/Dataset/Cortado')
     teste = DataLoader(dataset=teste, batch_size=batch_size, shuffle=True)
     
     for batch in teste:

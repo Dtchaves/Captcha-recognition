@@ -52,8 +52,8 @@ class VGG16(nn.Module):
   
   def forward(self, x):
     x = self.conv_layers(x)
-    #x = x.reshape(x.shape[0],-1)
-    #x = self.lin_layer(x)
+    x = x.reshape(x.shape[0],-1)
+    x = self.lin_layer(x)
     return x
     
 if __name__ == "__main__":
