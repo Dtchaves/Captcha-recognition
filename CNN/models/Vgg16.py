@@ -42,9 +42,6 @@ class VGG16(nn.Module):
         in_channels = x
         
       else:
-        if x == "C":
-          layers += [nn.MaxPool2d(kernel_size= 2, stride = 1)]
-        else:
           layers += [nn.MaxPool2d(kernel_size= 2, stride = 2)]
 
         

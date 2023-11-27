@@ -22,7 +22,7 @@ batch_size = 64
 #    transforms.ToTensor(),
 #    transforms.Normalize(mean=,std=)
 #]) 
-resize_transform = transforms.Resize((50,32))
+resize_transform = transforms.Resize((50,32), antialias=True)
 
 train_data = CaptchaDataloader(split='treinamento',transform= resize_transform,root_dir='/scratch/diogochaves/Projetos/ICV/Dataset/Cortado')
 val_data = CaptchaDataloader(split='validacao',transform= resize_transform,root_dir='/scratch/diogochaves/Projetos/ICV/Dataset/Cortado')
@@ -40,7 +40,7 @@ test_loader
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"\nRodando modelo de VGG16 simples na {device}")
+print(f"\nRodando modelo de VGG16 na {device}")
 
 cnn_model = VGG16().to(device)
 entrada = ''
@@ -50,7 +50,7 @@ while entrada != "Load" and entrada != "Train":
     if entrada == "Load":
         print(f"{Fore.BLUE}\n ----- STARTING LOADING -----\n{Style.RESET_ALL}")
         
-        path_dic = '/scratch/diogochaves/Projetos/ICV/CNN/results/best_w/Best_w_CNN'
+        path_dic = '/scratch/diogochaves/Projetos/ICV/CNN/results/best_w/Best_w_VGG16'
         dic = torch.load(path_dic)
         cnn_model.load_state_dict(dic)
         
@@ -58,11 +58,11 @@ while entrada != "Load" and entrada != "Train":
         
     elif entrada == "Train":
         trainer = Trainer(model=cnn_model,train_loader=train_loader,val_loader=val_loader,model_name="VGG16",path_par='/scratch/diogochaves/Projetos/ICV/CNN/results/best_w',path_loss='/scratch/diogochaves/Projetos/ICV/CNN/results/loss')
-        trainer.run(device=device,epochs=60)
+        trainer.run(device=device,epochs=50)
 
 print(f"{Fore.BLUE}\n ----- STARTING TESTING -----\n{Style.RESET_ALL}")
 
-test = Test(cnn_model,test_loader,"CNN",path='/scratch/diogochaves/Projetos/ICV/CNN/results/metrics')
+test = Test(cnn_model,test_loader,"VGG",path='/scratch/diogochaves/Projetos/ICV/CNN/results/metrics')
 classification_report = test.fit(device=device)
 print(classification_report)
 
