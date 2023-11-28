@@ -6,14 +6,13 @@ class CNN_net(nn.Module):
   def __init__(self):
       super().__init__()
       self.convlayers = nn.Sequential(
-        nn.Conv2d(1, 16, kernel_size=(3, 3)),
+        nn.Conv2d(1, 16, kernel_size=(5, 5),padding=1),
         nn.ReLU(),
         nn.MaxPool2d(2, 2),
 
-        nn.Conv2d(16, 32, kernel_size=(3, 3)),
+        nn.Conv2d(16, 32, kernel_size=(5, 5),padding=1),
         nn.ReLU(),
         nn.MaxPool2d(2, 2),
-
       )
 
       self.linearlayers = nn.Sequential(
@@ -39,5 +38,5 @@ if __name__ == "__main__":
     
     print(f"Rodando CNN\n")
     cnn_model = CNN_net().to(device)
-    summary(cnn_model, (1, 50, 30))
+    summary(cnn_model, (1, 50, 32))
     
