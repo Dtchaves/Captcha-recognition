@@ -39,7 +39,7 @@ class Trainer:
         
     def run(self,epochs,device):
         cnn_loss_func = nn.CrossEntropyLoss()
-        cnn_optimizer = torch.optim.SGD(self.model.parameters(), lr=0.001)
+        cnn_optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
 
         conv_train_losses = []
         conv_val_losses = []
