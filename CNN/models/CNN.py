@@ -18,10 +18,10 @@ class CNN_net(nn.Module):
       self.linearlayers = nn.Sequential(
           nn.Linear(2112, 1056),
           nn.ReLU(),
-          nn.Linear(1056, 528),
+          nn.Dropout(0.3),
+          nn.Linear(1056, 264),
           nn.ReLU(),
-          nn.Linear(528, 264),
-          nn.ReLU(),
+          nn.Dropout(0.3),
           nn.Linear(264, 37),
       )
 
