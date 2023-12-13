@@ -3,10 +3,10 @@ from torch import nn
 from torchsummary import summary
 
 
-class Block_Resnet34(nn.Module):
+class Block_Resnet18(nn.Module):
     def __init__(self,in_channels,out_channels,identity_downsample = None,stride = 1):
         self.stride = stride
-        super(Block_Resnet34,self).__init__()
+        super(Block_Resnet18,self).__init__()
         self.block_layers = nn.Sequential(
             nn.Conv2d(in_channels,out_channels, kernel_size = 3,stride = stride, padding = 1),
             nn.BatchNorm2d(out_channels),
@@ -26,9 +26,9 @@ class Block_Resnet34(nn.Module):
             
         return self.relu(x + identity)
     
-class Resnet34(nn.Module):
+class Resnet18(nn.Module):
     def __init__(self,img_channels = 1,num_classes = 37):
-        super(Resnet34,self).__init__()
+        super(Resnet18,self).__init__()
         self.in_channels = img_channels;
         self.initial_layers = nn.Sequential(
             nn.Conv2d(img_channels,64, kernel_size = 7,stride = 2, padding = 3),
@@ -58,12 +58,12 @@ class Resnet34(nn.Module):
 
                
                 
-            layers.append(Block_Resnet34(self.in_channels,out_channels,identity_downsample=identity_downsample,stride=stride))
+            layers.append(Block_Resnet18(self.in_channels,out_channels,identity_downsample=identity_downsample,stride=stride))
             self.in_channels = out_channels;
                     
             for num in range(num_blocks - 1):
                     
-                layers.append(Block_Resnet34(self.in_channels,out_channels,stride=1))
+                layers.append(Block_Resnet18(self.in_channels,out_channels,stride=1))
                 
 
 
